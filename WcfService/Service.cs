@@ -1,26 +1,17 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace WcfService
 {
-    public class Service : IService
+    [Authorize]
+    public partial class Service : IService
     {
-        [Authorize]
-        public string GetData(int value)
+        public string GetData(int value, [FromServices] HttpContext context)
         {
-            return string.Format("You entered: {0}", value);
-        }
+            var name = context.User.FindFirstValue("name");
 
-        public CompositeType GetDataUsingDataContract(CompositeType composite)
-        {
-            if (composite == null)
-            {
-                throw new ArgumentNullException("composite");
-            }
-            if (composite.BoolValue)
-            {
-                composite.StringValue += "Suffix";
-            }
-            return composite;
+            return $"Hello, {name}. You entered: {value}";
         }
     }
 }
