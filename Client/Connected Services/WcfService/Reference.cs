@@ -9,45 +9,7 @@
 
 namespace WcfService
 {
-    using System.Runtime.Serialization;
     
-    
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.2.0-preview1.23462.5")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="CompositeType", Namespace="http://schemas.datacontract.org/2004/07/WcfService")]
-    public partial class CompositeType : object
-    {
-        
-        private bool BoolValueField;
-        
-        private string StringValueField;
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public bool BoolValue
-        {
-            get
-            {
-                return this.BoolValueField;
-            }
-            set
-            {
-                this.BoolValueField = value;
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public string StringValue
-        {
-            get
-            {
-                return this.StringValueField;
-            }
-            set
-            {
-                this.StringValueField = value;
-            }
-        }
-    }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.2.0-preview1.23462.5")]
     [System.ServiceModel.ServiceContractAttribute(ConfigurationName="WcfService.IService")]
@@ -59,12 +21,6 @@ namespace WcfService
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IService/GetData", ReplyAction="http://tempuri.org/IService/GetDataResponse")]
         System.Threading.Tasks.Task<string> GetDataAsync(int value);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IService/GetDataUsingDataContract", ReplyAction="http://tempuri.org/IService/GetDataUsingDataContractResponse")]
-        WcfService.CompositeType GetDataUsingDataContract(WcfService.CompositeType composite);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IService/GetDataUsingDataContract", ReplyAction="http://tempuri.org/IService/GetDataUsingDataContractResponse")]
-        System.Threading.Tasks.Task<WcfService.CompositeType> GetDataUsingDataContractAsync(WcfService.CompositeType composite);
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.2.0-preview1.23462.5")]
@@ -125,16 +81,6 @@ namespace WcfService
         public System.Threading.Tasks.Task<string> GetDataAsync(int value)
         {
             return base.Channel.GetDataAsync(value);
-        }
-        
-        public WcfService.CompositeType GetDataUsingDataContract(WcfService.CompositeType composite)
-        {
-            return base.Channel.GetDataUsingDataContract(composite);
-        }
-        
-        public System.Threading.Tasks.Task<WcfService.CompositeType> GetDataUsingDataContractAsync(WcfService.CompositeType composite)
-        {
-            return base.Channel.GetDataUsingDataContractAsync(composite);
         }
         
         public virtual System.Threading.Tasks.Task OpenAsync()
