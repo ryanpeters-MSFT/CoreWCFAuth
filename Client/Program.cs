@@ -25,8 +25,8 @@ var channel = factory.CreateChannel();
 
 #region Set JWT Bearer token
 
-// JWT token
-var token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwicG9zaXRpb24iOiJ0ZWFjaGVyIiwiaWF0IjoxNTE2MjM5MDIyfQ.YT4H1tnwk0HnLiBUxuLpSMbSYPQD2OdaX2cvnYDwujE";
+// JWT token (assume this came from an identity provider)
+var token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IlJ5YW4iLCJwb3NpdGlvbiI6InRlYWNoZXIiLCJpYXQiOjE1MTYyMzkwMjJ9.i3eWEwxThXYTnahJpynfdkQR6dvjvgJBa-uXSJX5eNk";
 
 var httpRequestProperty = new HttpRequestMessageProperty();
 
