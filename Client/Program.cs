@@ -14,6 +14,7 @@ var endpoint = new EndpointAddress("https://127.0.0.1:7276/service.svc");
 
 var factory = new ChannelFactory<IServiceChannel>(basicHttpBinding, endpoint);
 
+// ignore the self-signed TLS cert
 factory.Credentials.ServiceCertificate.SslCertificateAuthentication = new X509ServiceCertificateAuthentication()
 {
     CertificateValidationMode = X509CertificateValidationMode.None,
@@ -22,15 +23,19 @@ factory.Credentials.ServiceCertificate.SslCertificateAuthentication = new X509Se
 
 var channel = factory.CreateChannel();
 
-var httpRequestProperty = new HttpRequestMessageProperty();
+#region Set JWT Bearer token
 
 // JWT token
 var token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwicG9zaXRpb24iOiJ0ZWFjaGVyIiwiaWF0IjoxNTE2MjM5MDIyfQ.YT4H1tnwk0HnLiBUxuLpSMbSYPQD2OdaX2cvnYDwujE";
 
+var httpRequestProperty = new HttpRequestMessageProperty();
+
 httpRequestProperty.Headers[HttpRequestHeader.Authorization] = $"Bearer {token}";
 
 OperationContext.Current = new OperationContext(channel);
-OperationContext.Current.OutgoingMessageProperties[HttpRequestMessageProperty.Name] = httpRequestProperty;
+OperationContext.Current.OutgoingMessageProperties[HttpRequestMessageProperty.Name] = httpRequestProperty; 
+
+#endregion
 
 var result = channel.GetData(3);
 

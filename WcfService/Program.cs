@@ -38,16 +38,7 @@ builder.Services.AddAuthorization(options =>
 
     //options.AddPolicy(JwtBearerDefaults.AuthenticationScheme, policy =>
     //{
-    //    policy.AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme);
-    //    policy.RequireClaim(ClaimTypes.Name);
-    //    policy.RequireAuthenticatedUser();
-
-    //    policy.RequireAssertion(context =>
-    //    {
-    //        var user = context.User.Claims;
-
-    //        return false;
-    //    });
+    //   // ...
     //});
 });
 
@@ -64,8 +55,5 @@ app.UseServiceModel(serviceBuilder =>
     var serviceMetadataBehavior = app.Services.GetRequiredService<ServiceMetadataBehavior>();
     serviceMetadataBehavior.HttpsGetEnabled = true;
 });
-
-app.UseAuthentication();
-app.UseAuthorization();
 
 app.Run();
