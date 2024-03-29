@@ -34,14 +34,9 @@ builder.Services.AddAuthorization(options =>
         .AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme)
         .RequireAuthenticatedUser()
         .RequireClaim("name")
-        .RequireClaim("position")
-        .RequireAssertion(context => context.User.FindFirstValue("position") == "teacher")
         .Build();
 
-    //options.AddPolicy(JwtBearerDefaults.AuthenticationScheme, policy =>
-    //{
-    //   // ...
-    //});
+    options.AddPolicy("is-teacher", policy => policy.RequireClaim("position", "teacher"));
 });
 
 var app = builder.Build();
