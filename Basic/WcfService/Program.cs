@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
@@ -11,35 +13,8 @@ builder.Services.AddServiceModelMetadata();
 builder.Services.AddTransient<Service>();
 builder.Services.AddSingleton<IServiceBehavior, UseRequestHeadersForMetadataAddressBehavior>();
 
-builder.Services.AddAuthentication(AuthenticationScheme)).AddJwtBearer(options =>
-{
-    var issuerSigningKey = builder.Configuration["IssuerSigningKey"];
-
-    //options.Authority = "https://authorization-server-uri";
-    //options.Audience = "my-audience";
-
-    options.TokenValidationParameters = new TokenValidationParameters
-    {
-        ValidateAudience = false,
-        ValidateIssuer = false,
-        RequireExpirationTime = false,
-        //ValidateActor = false,
-        //ValidateLifetime = true,
-
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(issuerSigningKey))
-    };
-});
-
-builder.Services.AddAuthorization(options =>
-{
-    options.DefaultPolicy = new AuthorizationPolicyBuilder()
-        .AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme)
-        .RequireAuthenticatedUser()
-        .RequireClaim("name")
-        .Build();
-
-    options.AddPolicy("is-teacher", policy => policy.RequireClaim("position", "teacher"));
-});
+builder.Services.AddAuthentication("Basic").AddScheme<AuthenticationSchemeOptions, 
+builder.Services.AddAuthorization();
 
 var app = builder.Build();
 
