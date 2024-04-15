@@ -1,2 +1,0 @@
-# CoreWCF Authentication and Authorization
-
