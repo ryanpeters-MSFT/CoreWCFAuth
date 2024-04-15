@@ -5,8 +5,9 @@ using System.Text.Encodings.Web;
 using System.Xml.Linq;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.Options;
+using WcfService.Repositories;
 
-public class BasicSchemeHandler(IOptionsMonitor<AuthenticationSchemeOptions> options, ILoggerFactory logger, UrlEncoder encoder) : AuthenticationHandler<AuthenticationSchemeOptions>(options, logger, encoder)
+public class BasicSchemeHandler(IAuthenticationRepository authenticationRepository, IOptionsMonitor<AuthenticationSchemeOptions> options, ILoggerFactory logger, UrlEncoder encoder) : AuthenticationHandler<AuthenticationSchemeOptions>(options, logger, encoder)
 {
     protected override async Task<AuthenticateResult> HandleAuthenticateAsync()
     {
@@ -18,10 +19,13 @@ public class BasicSchemeHandler(IOptionsMonitor<AuthenticationSchemeOptions> opt
             
             var credentialsAsEncodedString = Encoding.UTF8.GetString(Convert.FromBase64String(token));
             var credentials = credentialsAsEncodedString.Split(':');
+
+            var username = credentials[0];
+            var password = credentials[1];
             
-            if (await _userRepository.Authenticate(credentials[0], credentials[1]))
+            if (authenticationRepository.Authenticate(username, password))
             {
-                var identity = new GenericIdentity(credentials[0]);
+                var identity = new GenericIdentity(username);
                 var claimsPrincipal = new ClaimsPrincipal(identity);
                 var ticket = new AuthenticationTicket(claimsPrincipal, Scheme.Name);
 
@@ -36,27 +40,27 @@ public class BasicSchemeHandler(IOptionsMonitor<AuthenticationSchemeOptions> opt
     {
         var requestBodyInBytes = await request.BodyReader.ReadAsync();
         var body = Encoding.UTF8.GetString(requestBodyInBytes.Buffer.FirstSpan);
+        var envelope = "http://schemas.xmlsoap.org/soap/envelope/";
+
         request.BodyReader.AdvanceTo(requestBodyInBytes.Buffer.Start, requestBodyInBytes.Buffer.End);
 
-        string authTicketFromHeader = null;
-
-        if (body?.Contains(@"http://schemas.xmlsoap.org/soap/envelope/") == true)
+        if (body?.Contains(envelope) == true)
         {
-            XNamespace ns = "http://schemas.xmlsoap.org/soap/envelope/";
+            XNamespace ns = envelope;
             var soapEnvelope = XDocument.Parse(body);
             var headers = soapEnvelope.Descendants(ns + "Header").ToList();
 
             foreach (var header in headers)
             {
                 var authorizationElement = header.Element("Authorization");
+                
                 if (!string.IsNullOrWhiteSpace(authorizationElement?.Value))
                 {
-                    authTicketFromHeader = authorizationElement.Value;
-                    break;
+                    return authorizationElement.Value;
                 }
             }
         }
 
-        return authTicketFromHeader;
+        return null;
     }
 }
