@@ -15,6 +15,9 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
 {
     var issuerSigningKey = builder.Configuration["IssuerSigningKey"];
 
+    //options.Authority = "https://authorization-server-uri";
+    //options.Audience = "my-audience";
+
     options.TokenValidationParameters = new TokenValidationParameters
     {
         ValidateAudience = false,
@@ -45,7 +48,11 @@ app.UseServiceModel(serviceBuilder =>
     var basicHttpBinding = new BasicHttpBinding(BasicHttpSecurityMode.Transport);
     basicHttpBinding.Security.Transport.ClientCredentialType = HttpClientCredentialType.InheritedFromHost;
 
-    serviceBuilder.AddService<Service>();
+    serviceBuilder.AddService<Service>(options => 
+    {
+        //options.BaseAddresses.Add(new Uri("https://anotherurl/service"));
+    });
+
     serviceBuilder.AddServiceEndpoint<Service, IService>(basicHttpBinding, "/Service.svc");
 
     var serviceMetadataBehavior = app.Services.GetRequiredService<ServiceMetadataBehavior>();
